@@ -15,6 +15,21 @@ Source: `sdlc/v0/spec.md` (approved by the owner 2026-11-24; D8 look and feel is
 - **Critical path:** T1 > T3 > T4 > T9 > T10 > T11 > T14 > T17 > T20 > T21. T6 (design pass) needs the owner's pick before T8. T12, T15 and T7 can run in parallel with the UI tasks.
 - **Stops for the owner (not just review):** T6 (pick a look), T7 (approve the photo preview), T9 (approve the fact sheet and intro copy), T16 (cost and plan approval before any AWS or Cloudflare write), T21 (approve the live `www` cutover).
 
+## Waves (owner, 2026-11-24)
+Build runs one wave at a time; a wave's tasks run in parallel, each on its own branch and worktree. The owner reviews after each wave.
+
+| Wave | Tasks |
+|---|---|
+| 1 | T1 |
+| 2 | T2, T3, T7, T12 |
+| 3 | T4, T6, T15 |
+| 4 | T5, T8, T16 |
+| 5 | T9, T10, T13, T18 |
+| 6 | T11 |
+| 7 | T14 |
+| 8 | T17, T19, T20 |
+| 9 | T21 |
+
 ## Conventions used below
 - **AC0 (every task):** `make build`, `make lint` and `make test` run and their result lines are pasted into the task report. Until T1 lands, T1's own AC0 is the stack's first run. Not repeated per task.
 - **One task at a time.** Each task starts in plan mode and commits `sdlc/v0/tasks/T<n>/plan.md` (files that change, order of work, risks, proof, MCPs used) before any code, then stops for review after the work (CLAUDE.md, Build). Work on a branch; never push to `main`.
