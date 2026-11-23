@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The owner's personal website at **www.adhyaanilkumar.com**. Repo created 2026-11-22; the name follows the lowercase, hyphenated convention (`<username>.github.io` isn't needed for a custom domain).
 
-Status: V0 in progress (spec approved 2026-11-24; tasks in `sdlc/v0/tasks.md`). Stack (D12): Astro 6 static output, TypeScript strict, React islands, Tailwind 4, Node 22 (`.nvmrc`, 22.12 or newer) with npm. Hosting (D11): S3 + CloudFront.
+Status: V0 in progress (spec approved 2026-11-24; tasks in `sdlc/v0/tasks.md`). Stack (D12): Astro 7 static output, TypeScript strict, React islands, Tailwind 4, Node 22 (`.nvmrc`, 22.23.4 or newer) with npm. Hosting (D11): S3 + CloudFront.
 
 **Commands** (GNU make from MSYS2 bash, like social-grid; after a fresh clone run `npm ci` and `npx playwright install chromium` once):
 - `make build`: static site into `dist/`.

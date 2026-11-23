@@ -6,7 +6,7 @@ Source: `sdlc/v0/tasks.md` T1, `sdlc/v0/spec.md` D12, section 6.1, section 10, N
 A working, empty Astro site plus the commands to build, lint, test and preview it, and a CI job. Nothing public changes (no deploy). No design values yet: T6 picks the look and T8 builds the shell.
 
 ## Version choices (checked on npm, 2026-11-24)
-The installed Node is 22.16.0. Astro 7 and `@astrojs/react` 7 need Node 22.23.4 or newer, so they are **not** used.
+The first build ran on Node 22.16.0, below Astro 7's floor, so it used Astro 6. **Update 2026-11-24 (owner approved):** Node is now 22.23.5, so the site moved to Astro 7.4.13 and `@astrojs/react` 7.1.9 (both need Node 22.23.4 or newer). The table below is the original Astro 6 choice; the departures list at the end records the move.
 
 | Piece | Choice | Why |
 |---|---|---|
@@ -49,7 +49,7 @@ The placeholder page holds only the heading "personal-website" and the line "Com
 - AC5: `components.json` is present and valid for shadcn; `npx tailwindcss --help` resolves; no hex colour or design value appears in source; owner reviews the choices in the PR.
 
 ## Risks
-- Node 22.16 is below Astro 7's floor: handled by choosing Astro 6. A later bump needs a Node upgrade.
+- Node 22.16 was below Astro 7's floor: handled by choosing Astro 6, then resolved by the Node 22.23.5 upgrade and the Astro 7 move (see departures).
 - TypeScript 7 and ESLint 10 are new: if a plugin conflicts, fall back to the nearest supported version and record it here.
 - Windows: `make` runs in MSYS2 bash (as in social-grid). `playwright install` downloads Chromium once into the user cache folder, which has spaces; if that breaks, set `PLAYWRIGHT_BROWSERS_PATH` to a folder without spaces.
 - CRLF on Windows (`core.autocrlf=true`): Prettier uses `endOfLine: "auto"` so `--check` does not fail on a checkout.
@@ -60,9 +60,9 @@ The placeholder page holds only the heading "personal-website" and the line "Com
 playwright (open the built page at both widths and screenshot it). No AWS, Cloudflare or 21st calls.
 
 ## Departures from the plan above (found while building, same commit as the code)
-- **Vite override.** `package.json` has `overrides: { vite: "7.3.8" }`. Without it npm installed Vite 8 at the top level (pulled in by Vitest 5 and `@tailwindcss/vite`) next to Astro's Vite 7, and `astro build` failed with "Missing field `tsconfigPaths`". One Vite 7 for everything fixes it. Remove the override when Astro moves to Vite 8.
+- **Vite override (removed 2026-11-24).** Astro 6 needed `overrides: { vite: "7.3.8" }` so Vitest 5 and `@tailwindcss/vite` did not install Vite 8 beside Astro's Vite 7. Astro 7 uses Vite 8, so the override is gone and the lockfile resolves one Vite 8.3.8 for everything.
 - **Windows detection in the Makefile.** MSYS2 make does not receive the `OS` variable (same in social-grid), so `ifeq ($(OS),Windows_NT)` picked plain `npm`, which failed silently. The Makefile now also checks `uname -s` for `NT-` or `MINGW`.
 - **Favicon.** A real browser (Playwright MCP) logged a 404 for `/favicon.ico`, which the Playwright test runner does not request. The placeholder has `<link rel="icon" href="data:,">` and the smoke test also fails on any HTTP status of 400 or more. T8 adds the real icon.
 - **`@types/node` (22)** added so `astro check` accepts `playwright.config.ts`.
-- **Audit findings, for the owner.** `npm audit` reports advisories against all Astro 6.x (fixed only in Astro 7.4.7 or newer, which needs Node 22.23.4 or newer; installed is 22.16.0). They concern SSR, the image service and hydrated islands; this site is static with no runtime server and no user-supplied markup. Recommended follow-up: upgrade Node to 22.23.4 or newer and bump to Astro 7 in a small tooling task. `eslint-plugin-astro` 3.2 also declares Node 22.22.3 or newer; it runs on 22.16 with an engine warning. CI uses the latest Node 22, so neither warns there.
+- **Astro 7 move (2026-11-24, owner approved).** Node upgraded to 22.23.5. `astro` ^7.4.13 and `@astrojs/react` ^7.1.9; `.nvmrc` is `22.23.4` and `engines.node` is `>=22.23.4` (Astro 7's floor). The Astro advisories that applied to all Astro 6.x are gone: `npm audit` reports 0 vulnerabilities. `eslint-plugin-astro` 3.2's Node floor (22.22.3) is also met. The lockfile was regenerated from scratch. `make build`, `make lint` (0 errors, 0 warnings) and `make test` (2 unit, 2 e2e) pass unchanged; no test was edited.
 - **AC4 green run.** Not shown: this task may not push or open a PR. The `ci` job is ready; the first PR run is the evidence.
