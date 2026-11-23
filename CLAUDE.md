@@ -6,7 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The owner's personal website at **www.adhyaanilkumar.com**. Repo created 2026-11-22; the name follows the lowercase, hyphenated convention (`<username>.github.io` isn't needed for a custom domain).
 
-Status: nothing built yet (README only). V0 starts with `sdlc/v0/intent.md` on its first BUILD day. Stack and hosting aren't decided: the V0 spec decides them with the owner. Add build, lint and test commands here once the first task sets up the stack.
+Status: V0 in progress (spec approved 2026-11-24; tasks in `sdlc/v0/tasks.md`). Stack (D12): Astro 6 static output, TypeScript strict, React islands, Tailwind 4, Node 22 (`.nvmrc`, 22.12 or newer) with npm. Hosting (D11): S3 + CloudFront.
+
+**Commands** (GNU make from MSYS2 bash, like social-grid; after a fresh clone run `npm ci` and `npx playwright install chromium` once):
+- `make build`: static site into `dist/`.
+- `make lint`: ESLint (warnings fail), Prettier check, `astro check`.
+- `make test`: Vitest unit tests (`tests/unit`), then Playwright on real Chromium at 1440x900 and 390x844 (`tests/e2e`; it builds and serves the site itself).
+- `make preview`: serves `dist/` at http://127.0.0.1:4321 (run `make build` first).
+- CI (`.github/workflows/ci.yml`, job `ci`) runs lint, test and build on pull requests; actions are pinned to commit SHAs.
 
 ## Hard rules
 - **Facts come from the resume.** The source is `C:\git\jarvis\resume\adhya_resume.tex` (master copy on Overleaf). Never invent skills, roles, dates or numbers.

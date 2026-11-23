@@ -1,0 +1,14 @@
+# Not code, or owned by other tasks and tools.
+node_modules/
+dist/
+.astro/
+test-results/
+playwright-report/
+package-lock.json
+.claude/
+.mcp.json
+assets/
+private/
+resume/
+sdlc/
+*.md

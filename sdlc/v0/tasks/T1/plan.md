@@ -58,3 +58,11 @@ The placeholder page holds only the heading "personal-website" and the line "Com
 
 ## MCPs used
 playwright (open the built page at both widths and screenshot it). No AWS, Cloudflare or 21st calls.
+
+## Departures from the plan above (found while building, same commit as the code)
+- **Vite override.** `package.json` has `overrides: { vite: "7.3.8" }`. Without it npm installed Vite 8 at the top level (pulled in by Vitest 5 and `@tailwindcss/vite`) next to Astro's Vite 7, and `astro build` failed with "Missing field `tsconfigPaths`". One Vite 7 for everything fixes it. Remove the override when Astro moves to Vite 8.
+- **Windows detection in the Makefile.** MSYS2 make does not receive the `OS` variable (same in social-grid), so `ifeq ($(OS),Windows_NT)` picked plain `npm`, which failed silently. The Makefile now also checks `uname -s` for `NT-` or `MINGW`.
+- **Favicon.** A real browser (Playwright MCP) logged a 404 for `/favicon.ico`, which the Playwright test runner does not request. The placeholder has `<link rel="icon" href="data:,">` and the smoke test also fails on any HTTP status of 400 or more. T8 adds the real icon.
+- **`@types/node` (22)** added so `astro check` accepts `playwright.config.ts`.
+- **Audit findings, for the owner.** `npm audit` reports advisories against all Astro 6.x (fixed only in Astro 7.4.7 or newer, which needs Node 22.23.4 or newer; installed is 22.16.0). They concern SSR, the image service and hydrated islands; this site is static with no runtime server and no user-supplied markup. Recommended follow-up: upgrade Node to 22.23.4 or newer and bump to Astro 7 in a small tooling task. `eslint-plugin-astro` 3.2 also declares Node 22.22.3 or newer; it runs on 22.16 with an engine warning. CI uses the latest Node 22, so neither warns there.
+- **AC4 green run.** Not shown: this task may not push or open a PR. The `ci` job is ready; the first PR run is the evidence.
